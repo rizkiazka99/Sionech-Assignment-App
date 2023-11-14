@@ -54,11 +54,23 @@ class _HomeScreenState extends State<HomeScreen> {
               if (state is MoviesLoadedState) {
                 List<MoviesEntity> movies = state.movies;
         
-                return LoadedState(movies: movies);
+                return LoadedState(
+                  movies: movies,
+                  onRefresh: () async {
+                    BlocProvider.of<MoviesBloc>(context)
+                        .add(LoadMoviesEvent());
+                  }
+                );
               }
         
               if (state is MoviesErrorState) {
-                return ErrorState(message: state.error);
+                return ErrorState(
+                  message: state.error,
+                  reload: () {
+                    BlocProvider.of<MoviesBloc>(context)
+                        .add(LoadMoviesEvent());
+                  },
+                );
               }
         
               return const SizedBox.shrink();

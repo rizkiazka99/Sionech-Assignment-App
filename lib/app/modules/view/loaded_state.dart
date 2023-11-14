@@ -8,10 +8,12 @@ import 'package:sionech_assignment_app/app/utils/constants.dart';
 
 class LoadedState extends StatefulWidget {
   final List<MoviesEntity> movies;
+  final Future<void> Function() onRefresh;
   
   const LoadedState({
     super.key,
-    required this.movies
+    required this.movies,
+    required this.onRefresh
   });
 
   @override
@@ -21,29 +23,33 @@ class LoadedState extends StatefulWidget {
 class _LoadedStateState extends State<LoadedState> {
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      padding: EdgeInsets.symmetric(
-        horizontal: 12.w,
-        //vertical: 12.h
+    return RefreshIndicator(
+      onRefresh: widget.onRefresh,
+      child: GridView.builder(
+        physics: const BouncingScrollPhysics(),
+        padding: EdgeInsets.symmetric(
+          horizontal: 12.w,
+          //vertical: 12.h
+        ),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          childAspectRatio: 2 / 3,
+          crossAxisSpacing: 8.h,
+          mainAxisSpacing: 4.w
+        ),
+        itemCount: widget.movies.length,
+        itemBuilder: (context, index) {
+          return CachedNetworkImage(
+            fit: BoxFit.cover,
+            imageUrl: basePosterUrl + widget.movies[index].posterPath,
+            placeholder: (context, url) => SpinKitHourGlass(
+              color: AppColors.primaryColor,
+              size: 18.sp,
+            ),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+          );
+        }
       ),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        childAspectRatio: 2 / 3,
-        crossAxisSpacing: 8.h,
-        mainAxisSpacing: 4.w
-      ),
-      itemCount: widget.movies.length,
-      itemBuilder: (context, index) {
-        return CachedNetworkImage(
-          fit: BoxFit.cover,
-          imageUrl: basePosterUrl + widget.movies[index].posterPath,
-          placeholder: (context, url) => SpinKitHourGlass(
-            color: AppColors.primaryColor,
-            size: 18.sp,
-          ),
-          errorWidget: (context, url, error) => const Icon(Icons.error),
-        );
-      }
     );
   }
 }

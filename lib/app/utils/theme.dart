@@ -45,4 +45,13 @@ class MyTheme {
       colorScheme: const ColorScheme.light(primary: AppColors.primaryColor)
     );
   }
+
+  static List<BoxShadow> boxShadows = [
+    const BoxShadow(
+      color: AppColors.shadowColor,
+      blurRadius: 12,
+      spreadRadius: 0,
+      offset: Offset(2, 2)
+    )
+  ];
 }
